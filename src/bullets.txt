@@ -1,0 +1,121 @@
+
+
+function(roomId){
+    this.chatkitService.roomId=roomId
+    this.roomId=roomId
+    this.chatkitService.subscribeToRoom(roomId)
+  }
+
+function(){
+    this.messages = this.chatkitService.messages
+    this.room = this.chatkitService.roomId
+}
+
+
+function() {
+    this.rooms = this.chatkitService.rooms;    
+  }
+
+
+function() {
+    this.currentUser.getJoinableRooms()
+    .then(joinableRooms => {
+        this.joinableRooms = joinableRooms
+    })
+    .catch(err => console.log('error on joinableRooms: ', err))
+  }
+
+function(private chatkitService: ChatkitService) {
+    
+}
+
+function(text: string){
+    this.chatkitService.currentUser.sendMessage({
+      text,
+      roomId: this.chatkitService.roomId
+    })
+    this.messageText = null;
+    event.preventDefault()
+  }
+
+function() {
+    const chatManager = new Chatkit.ChatManager({
+        instanceLocator,
+        userId: userName,
+        tokenProvider: new Chatkit.TokenProvider({
+            url: tokenUrl
+        })
+    })
+
+    this.chatManager = chatManager;
+    this.connect()
+  }
+
+function(private chatkitService: ChatkitService) { 
+    
+}
+
+function(){
+    this.chatManager.connect()
+    .then(currentUser => {
+        this.currentUser = currentUser
+        this.rooms=this.currentUser.rooms
+        this.getRooms()
+    })
+    .catch(err => console.log('error on connecting: ', err))
+  }
+
+
+function(private chatkitService: ChatkitService) { 
+    this.roomId = this.chatkitService.roomId
+  }
+
+function(roomId) {
+    this.messages = [];
+    this.currentUser.subscribeToRoom({
+        roomId: roomId,
+        hooks: {
+            onNewMessage: message => {
+                this.messages= [...this.messages, message] 
+            }
+            
+        }
+    })
+    .then(room => {
+        this.roomId= room.id
+        this.getRooms()
+    })
+    .catch(err => console.log('error on subscribing to room: ', err))
+  }
+
+
+
+
+
+
+<element>
+      <element src="assets/img/0.png" alt="image">
+    <element>Your rooms:</element>  
+    <element>
+        <element class="room" *ngFor='let room of rooms'  [ngClass]="{'active': room.id==roomId}"><element (click)="subscribe(room.id)">#{{room.name}}</element> </element>
+    </element>
+  </element>
+
+
+<element class="scroll-list" #scrollMe [scrollTop]="scrollMe.scrollHeight">
+    <element class="join-room" *ngIf="room == null">Join a room! &rarr; </element>
+    <app-element *ngFor="let message of messages" [message]="message">
+           
+    </app-element>
+</element>
+
+
+<element #box type="text" (keydown.enter)="sendMessage(box.value)" placeholder="Scrivi qui il tuo messaggio" [value]="messageText"/>
+
+
+<element class="message" [ngClass]="{'my-message': message.senderId==username}">
+    <element class="message-username">{{message.senderId}}</element>
+    <element class="message-text">{{message.text}}</element>
+</element>
+
+
